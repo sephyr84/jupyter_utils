@@ -19,7 +19,7 @@ def my_timer(original_function):
     t1 = time.time()
     result = original_function(*args, **kwargs)
     t2 = time.time() - t1
-    print('[' + color.RED + original_function.__name__ + color.END + '] function execution time: {:10.2f} sec'.format(t2))
+    print('[' + color.RED + original_function.__name__ + color.END + '] function execution time: {}'.format(str(datetime.timedelta(seconds=t2))))
     return result
   return wrapper
 
