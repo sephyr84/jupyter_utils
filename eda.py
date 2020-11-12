@@ -61,3 +61,18 @@ def remove_null_cols(dataframe, rate=0, ch_method='mean'):
         return dataframe.drop(null_cols, axis=1).fillna(dataframe[ch_cols].min()), null_cols, ch_cols
             
     return dataframe_null.drop(null_cols, axis=1), null_cols
+
+# FACTORIZE CATEGORICAL DATA
+def dataframe_fac(dataframe):
+    dataframe_dict = {}
+    object_cols = []
+    for col in dataframe.columns:
+        if type_dict[col] == 'object':
+            fac = pd.factorize(dataframe[col], sort=True)
+            dataframe[col+'_fac'] = fac[0]
+            dataframe_dict[col] = dataframe[[col, col+'_fac']].drop_duplicates()
+            object_cols.append(col)
+            dataframe[col] = dataframe_fac[col+'_fac']
+            dataframe = dataframe.drop(col+'_fac', axis=1)
+            
+    return dataframe, dataframe_dict, object_cols
