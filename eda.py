@@ -46,9 +46,18 @@ def show_col_info(col_name=data.columns):
 # DATA FILTER FOR ANAYSIS
 def remove_null_cols(dataframe, rate=0, ch_method='mean'):
     null_cols = []
+    ch_cols = []
     for col in dataframe.columns:
         if dataframe[col].isnull().sum() > rate:
             null_cols.append(col)
         elif (dataframe[col].isnull().sum() <= rate) & (dataframe[col].isnull().sum() > 0):
+            ch_cols.append(col)
+            
+    if ch_method=='mean':
+        return dataframe.drop(null_cols, axis=1).fillna(dataframe[ch_cols].mean()), null_cols, ch_cols
+    elif ch_method=='max':
+        return dataframe.drop(null_cols, axis=1).fillna(dataframe[ch_cols].max()), null_cols, ch_cols
+    elif ch_method=='min':
+        return dataframe.drop(null_cols, axis=1).fillna(dataframe[ch_cols].min()), null_cols, ch_cols
             
     return dataframe_null.drop(null_cols, axis=1), null_cols
