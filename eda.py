@@ -6,6 +6,9 @@ import numpy as np
 import seaborn as sns
 from IPython.display import display, HTML
 from IPython.core.interactiveshell import InteractiveShell
+from ipywidgets import interact, interactive, fixed, interact_manual
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # FILE READ
 file_name = 'PATH/TO/FILE'
