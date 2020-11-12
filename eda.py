@@ -1,8 +1,8 @@
 import io
-
+# Data handling library
 import pandas as pd
 import numpy as np
-
+# Data Visualizing library
 import seaborn as sns
 from IPython.display import display, HTML
 from IPython.core.interactiveshell import InteractiveShell
@@ -15,7 +15,6 @@ data = pd.read_csv(file_name)
 buffer = io.StringIO()
 data.info(buf=buffer)
 info_s = buffer.getvalue()
-
 type_dict = {}
 type_row = len(info_s.splitlines()) - 3
 for idx, line in enumerate(info_s.splitlines()):
@@ -24,6 +23,7 @@ for idx, line in enumerate(info_s.splitlines()):
         type_name = line.split()[3]
         type_dict[col_name] = type_name
 
+# DATA VISUALIZE FOR EDA
 @interact
 def show_col_info(col_name=data.columns):
     count_table = data.reset_index().groupby(col_name).count().reset_index()[[col_name, 'index']].sort_values('index', ascending=False)
@@ -42,3 +42,13 @@ def show_col_info(col_name=data.columns):
         print('NULL TABLE')
     print("<", col_name, ">")
     display(count_table[:10])
+
+# DATA FILTER FOR ANAYSIS
+def remove_null_cols(dataframe, rate=0, ch_method='mean'):
+    null_cols = []
+    for col in dataframe.columns:
+        if dataframe[col].isnull().sum() > rate:
+            null_cols.append(col)
+        elif (dataframe[col].isnull().sum() <= rate) & (dataframe[col].isnull().sum() > 0):
+            
+    return dataframe_null.drop(null_cols, axis=1), null_cols
