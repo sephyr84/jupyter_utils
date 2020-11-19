@@ -14,17 +14,55 @@ import seaborn as sns
 file_name = 'PATH/TO/FILE'
 data = pd.read_csv(file_name)
 
-# CREATE FILE TYPE DICT DATA
-buffer = io.StringIO()
-data.info(buf=buffer)
-info_s = buffer.getvalue()
-type_dict = {}
-type_row = len(info_s.splitlines()) - 3
-for idx, line in enumerate(info_s.splitlines()):
-    if (idx >= 3) & (idx <= type_row):
-        col_name = line.split()[0]
-        type_name = line.split()[3]
-        type_dict[col_name] = type_name
+# CREATE COL_DATA_TYPE DICT_DATA
+def get_type_dict(dataname):
+    data = dataname
+    # CREATE FILE TYPE DICT DATA
+    buffer = io.StringIO()
+    col_len = len(data.columns)
+    data.info(buf=buffer, max_cols=col_len)
+    info_s = buffer.getvalue()
+    type_dict = {}
+    type_row = len(info_s.splitlines()) - 3
+    for idx, line in enumerate(info_s.splitlines()):
+        if (idx >= 3) & (idx <= type_row):
+            col_name = line.split()[0]
+            type_name = line.split()[3]
+            type_dict[col_name] = type_name
+    
+    return type_dict
+
+type_dict = get_type_dict(data)
+
+# CHANGE FLOAT TO INT
+def float_to_int(dataframe, type_dict):
+    changed_cols = []
+    for col in dataframe.columns:
+        if 'float' in type_dict[col]:
+            if dataframe[col].apply(float.is_integer).all() == True:
+                dataframe[col] = dataframe[col].astype('int')
+                changed_cols.append(col)
+                
+    print("changed_cols :", changed_cols)
+
+    return dataframe, changed_cols
+        
+data, changed_cols = float_to_int(data, type_dict)
+
+# REMOVE ONE DATA COLUMNS
+def remove_one_data(dataframe):
+    remove_cols = []
+    for col in dataframe.columns:
+        data_len = len(dataframe.groupby(col).count())
+        if data_len == 1:
+            dataframe = dataframe.drop(col, axis=1)
+            remove_cols.append(col)
+            
+    print("remove_cols :", remove_cols)
+            
+    return dataframe, remove_cols
+
+data, remove_cols = remove_one_data(data)
 
 # DATA VISUALIZE FOR EDA
 @interact
@@ -43,6 +81,7 @@ def show_col_info(col_name=data.columns):
         null_table = null_table.rename(columns={'index':'count'})
         null_table['rate'] = null_table['count'] / len(data)
         print('NULL TABLE')
+        display(null_table)
     print("<", col_name, ">")
     display(count_table[:10])
 
