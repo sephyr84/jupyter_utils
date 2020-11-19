@@ -19,8 +19,8 @@ def get_type_dict(dataname):
     data = dataname
     # CREATE FILE TYPE DICT DATA
     buffer = io.StringIO()
-    col_len = len(data.columns)
-    data.info(buf=buffer, max_cols=col_len)
+    col_len = len(dataname.columns)
+    dataname.info(buf=buffer, max_cols=col_len)
     info_s = buffer.getvalue()
     type_dict = {}
     type_row = len(info_s.splitlines()) - 3
