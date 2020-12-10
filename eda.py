@@ -27,7 +27,7 @@ def get_type_dict(dataname):
     for idx, line in enumerate(info_s.splitlines()):
         if (idx >= 3) & (idx <= type_row):
             col_name = line.split()[0]
-            type_name = line.split()[3]
+            type_name = line.split()[-1]
             type_dict[col_name] = type_name
     
     return type_dict
